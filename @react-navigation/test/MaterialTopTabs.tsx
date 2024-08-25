@@ -42,6 +42,7 @@ const checkIsObject = (obj: any) => {
 }
 
 export const MaterialTopTabsExample = () => {
+  const [contWidth, setContWidth] = useState(Dimensions.get('window').width);
   const ToggleButton: React.FC<{
     title?: string,
     list: any[],
@@ -80,16 +81,12 @@ export const MaterialTopTabsExample = () => {
             gap: 10,
           }}>
             {
-
               list.map((key: any, index: number) => {
                 let title = key, value = key;
-
-
                 if (Object.prototype.toString.call(key).slice(8, -1) === 'Object') {
                   title = key.title;
                   value = key.value
                 }
-
                 // console.log('render', title, value, state)
                 return (
                   <Pressable
@@ -354,17 +351,17 @@ export const MaterialTopTabsExample = () => {
   const ViewStyle = [
 
     {
-      title: '{borderColor:pink,borderWidth:3}',
+      title: '{borderColor:pink,borderWidth:2}',
       value: {
         borderColor: 'pink',
-        borderWidth: 3
+        borderWidth: 2
       }
     },
     {
-      title: '{borderColor:red,borderWidth:10}',
+      title: '{borderColor:red,borderWidth:5}',
       value: {
         borderColor: 'red',
-        borderWidth: 10
+        borderWidth: 5
       }
     },
     {
@@ -566,7 +563,7 @@ export const MaterialTopTabsExample = () => {
             title: '{padding:10,backgroundColor:pink}',
             value: {
               padding: 10,
-              backgroundColor: 'green'
+              backgroundColor: 'pink'
             }
           },
           ...ViewStyle]
@@ -778,8 +775,8 @@ export const MaterialTopTabsExample = () => {
         extraOptions: {
           tabBarShowIcon: true,
           tabBarIcon: () => {
-            return <View>
-              <Text>
+            return <View style={{ width: 50, height: 50 }}>
+              <Text style={{ fontSize: 12 }}>
                 ico
               </Text>
             </View>
@@ -789,7 +786,7 @@ export const MaterialTopTabsExample = () => {
       },
 
       tabBarLabelStyle: {
-        description: 'tabBar标签样式，加个粉色背景',
+        description: 'tabBar标签样式',
         type: 'screenOptions',
         value: {
           title: '{color:red}',
@@ -856,7 +853,7 @@ export const MaterialTopTabsExample = () => {
       },
       tabBarStyle: {
         type: 'screenOptions',
-        description: 'tabBar样式，加粉色背景',
+        description: 'tabBar样式',
         value: {
           title: 'backgroundColor:red',
           value: {
@@ -985,25 +982,56 @@ export const MaterialTopTabsExample = () => {
                     })
                   }}></ToggleButton>
                   <TestCase itShould={description} tags={['C_API']}>
-                    <View style={styles.container}>
+                    <View style={styles.container} onLayout={(e) => {
+                      setContWidth(e.nativeEvent.layout.width);
+                    }}>
                       <NavigationContainer>
                         <Tab.Navigator
                           {...initOptions}
                         >
-                          <Tab.Screen name="Home" component={HomeScreen} />
-                          <Tab.Screen name="Notifications" component={NotificationsScreen} />
-                          <Tab.Screen name="Settings" component={SettingsScreen} />
+                          <Tab.Screen name="Home" component={HomeScreen}
+                            options={{
+                              tabBarItemStyle: {
+                                width:
+                                  title === 'tabBarScrollEnabled' && state[title].value
+                                    ? contWidth / 3 + 20
+                                    : state[title].value?.value?.padding
+                                      ? (contWidth / 3 - state[title].value?.value?.padding)
+                                      : contWidth / 3,
+                              }
+                            }}
+                          />
+                          <Tab.Screen name="Notifications" component={NotificationsScreen}
+                            options={{
+                              tabBarItemStyle: {
+                                width:
+                                  title === 'tabBarScrollEnabled' && state[title].value
+                                    ? contWidth / 3 + 20
+                                    : state[title].value?.value?.padding
+                                      ? (contWidth / 3 - state[title].value?.value?.padding)
+                                      : contWidth / 3,
+                              }
+                            }}
+                          />
+                          <Tab.Screen name="Settings" component={SettingsScreen}
+                            options={{
+                              tabBarItemStyle: {
+                                width:
+                                  title === 'tabBarScrollEnabled' && state[title].value
+                                    ? contWidth / 3 + 20
+                                    : state[title].value?.value?.padding
+                                      ? (contWidth / 3 - state[title].value?.value?.padding)
+                                      : contWidth / 3,
+                              }
+                            }}
+                          />
                         </Tab.Navigator >
                       </NavigationContainer>
                     </View>
                   </TestCase>
                 </TestSuite>
               } else if (type === 'preview') {
-
                 let { screenOptions = {}, ...rest } = props || {}
-
-                console.log('props', JSON.stringify(props))
-
                 initOptions = {
                   screenOptions: {
                     ...initOptions.screenOptions,
@@ -1011,18 +1039,18 @@ export const MaterialTopTabsExample = () => {
                   },
                   ...rest
                 }
-
-
                 return <TestSuite name={title} key={title}>
                   <TestCase itShould={description} tags={['C_API']}>
-                    <View style={styles.container}>
+                    <View style={styles.container} onLayout={(e) => {
+                      setContWidth(e.nativeEvent.layout.width);
+                    }}>
                       <NavigationContainer>
                         <Tab.Navigator
                           {...initOptions}
                         >
-                          <Tab.Screen name="Home" component={HomeScreen} />
-                          <Tab.Screen name="Notifications" component={NotificationsScreen} />
-                          <Tab.Screen name="Settings" component={SettingsScreen} />
+                          <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarItemStyle: { width: contWidth / 3 } }} />
+                          <Tab.Screen name="Notifications" component={NotificationsScreen} options={{ tabBarItemStyle: { width: contWidth / 3 } }} />
+                          <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarItemStyle: { width: contWidth / 3 } }} />
                         </Tab.Navigator >
                       </NavigationContainer>
                     </View>
@@ -1043,12 +1071,14 @@ export const MaterialTopTabsExample = () => {
                     })
                   }}></ToggleButton>
                   <TestCase itShould={description} tags={['C_API']}>
-                    <View style={styles.container}>
+                    <View style={styles.container} onLayout={(e) => {
+                      setContWidth(e.nativeEvent.layout.width);
+                    }}>
                       <NavigationContainer>
                         <Tab.Navigator screenOptions={{ [title]: state[title].value.value, }}>
-                          <Tab.Screen name="Home" component={HomeScreen} />
-                          <Tab.Screen name="Notifications" component={NotificationsScreen} />
-                          <Tab.Screen name="Settings" component={SettingsScreen} />
+                          <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarItemStyle: [{ width: contWidth / 3, }, title === 'tabBarItemStyle' ? state[title].value.value : undefined] }} />
+                          <Tab.Screen name="Notifications" component={NotificationsScreen} options={{ tabBarItemStyle: [{ width: contWidth / 3, }, title === 'tabBarItemStyle' ? state[title].value.value : undefined] }} />
+                          <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarItemStyle: [{ width: contWidth / 3, }, title === 'tabBarItemStyle' ? state[title].value.value : undefined] }} />
                         </Tab.Navigator >
                       </NavigationContainer>
                     </View>
@@ -1060,7 +1090,9 @@ export const MaterialTopTabsExample = () => {
                     <TestCase itShould='navigator的id,子路由通过id可找到父路由'
                       tags={['C_API']}
                     >
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }} >
                         <NavigationContainer>
                           <Tab.Navigator id='uniId' screenOptions={{
                             tabBarLabelStyle: {
@@ -1068,8 +1100,8 @@ export const MaterialTopTabsExample = () => {
                             }
                           }}
                           >
-                            <Tab.Screen name="Home" component={HomeNest} />
-                            <Tab.Screen name="Settings" component={SettingsScreen} />
+                            <Tab.Screen name="Home" component={HomeNest} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
+                            <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
                           </Tab.Navigator>
                         </NavigationContainer>
                       </View>
@@ -1081,7 +1113,9 @@ export const MaterialTopTabsExample = () => {
                 if (title === 'title') {
                   return <TestSuite name='title' key={'title'}>
                     <TestCase itShould='页面名称，现改成中文' tags={['C_API']}>
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }}>
                         <NavigationContainer>
                           <Tab.Navigator screenOptions={{
                             tabBarLabelStyle: {
@@ -1089,11 +1123,13 @@ export const MaterialTopTabsExample = () => {
                             }
                           }}>
                             <Tab.Screen name="Home" component={HomeScreen} options={{
-                              title: '主页'
+                              title: '主页',
+                              tabBarItemStyle: { width: contWidth / 2 }
                             }} />
 
                             <Tab.Screen name="Settings" component={SettingsScreen} options={{
-                              title: '设置'
+                              title: '设置',
+                              tabBarItemStyle: { width: contWidth / 2 }
                             }} />
                           </Tab.Navigator >
                         </NavigationContainer>
@@ -1106,7 +1142,9 @@ export const MaterialTopTabsExample = () => {
                 if (title === 'tabBarLabel') {
                   return <TestSuite name='tabBarLabel' key={'tabBarLabel'}>
                     <TestCase itShould='tabBar标签' tags={['C_API']}>
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }}>
                         <NavigationContainer>
                           <Tab.Navigator screenOptions={{
                             tabBarLabelStyle: {
@@ -1114,11 +1152,13 @@ export const MaterialTopTabsExample = () => {
                             }
                           }}>
                             <Tab.Screen name="Home" component={HomeScreen} options={{
-                              tabBarLabel: '主页'
+                              tabBarLabel: '主页',
+                              tabBarItemStyle: { width: contWidth / 2 }
                             }} />
 
                             <Tab.Screen name="Settings" component={SettingsScreen} options={{
-                              tabBarLabel: '设置'
+                              tabBarLabel: '设置',
+                              tabBarItemStyle: { width: contWidth / 2 }
                             }} />
                           </Tab.Navigator >
                         </NavigationContainer>
@@ -1131,7 +1171,9 @@ export const MaterialTopTabsExample = () => {
                 if (title === 'tabBarAccessibilityLabel') {
                   return <TestSuite name='tabBarAccessibilityLabel' key={'tabBarAccessibilityLabel'}>
                     <TestCase itShould='开启系统的屏幕阅读器，读取已设置的无障碍按钮标签' tags={['C_API']}>
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }}>
                         <NavigationContainer>
                           <Tab.Navigator screenOptions={{
                             tabBarLabelStyle: {
@@ -1139,11 +1181,13 @@ export const MaterialTopTabsExample = () => {
                             }
                           }}>
                             <Tab.Screen name="Home" component={HomeScreen} options={{
-                              tabBarAccessibilityLabel: '这是自定义无障碍标签主页'
+                              tabBarAccessibilityLabel: '这是自定义无障碍标签主页',
+                              tabBarItemStyle: { width: contWidth / 2 }
                             }} />
 
                             <Tab.Screen name="Settings" component={SettingsScreen} options={{
-                              tabBarAccessibilityLabel: '这是自定义无障碍标签设置'
+                              tabBarAccessibilityLabel: '这是自定义无障碍标签设置',
+                              tabBarItemStyle: { width: contWidth / 2 }
                             }} />
                           </Tab.Navigator >
                         </NavigationContainer>
@@ -1156,7 +1200,9 @@ export const MaterialTopTabsExample = () => {
                 if (title === 'tabBarIcon') {
                   return <TestSuite name='tabBarIcon' key={'tabBarIcon'}>
                     <TestCase itShould='tabBar图标' tags={['C_API']}>
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }}>
                         <NavigationContainer>
                           <Tab.Navigator screenOptions={{
                             tabBarLabelStyle: {
@@ -1164,6 +1210,7 @@ export const MaterialTopTabsExample = () => {
                             }
                           }}>
                             <Tab.Screen name="Home" component={HomeScreen} options={{
+                              tabBarItemStyle: { width: contWidth / 2 },
                               tabBarIcon: ({ focused: boolean, color: string }) => {
                                 return <View style={styles.icon}>
                                   <Text>
@@ -1172,7 +1219,7 @@ export const MaterialTopTabsExample = () => {
                                 </View>
                               }
                             }} />
-                            <Tab.Screen name="Settings" component={SettingsScreen} />
+                            <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
                           </Tab.Navigator >
                         </NavigationContainer>
                       </View>
@@ -1183,7 +1230,9 @@ export const MaterialTopTabsExample = () => {
                 if (title === 'tabBarBadge') {
                   return <TestSuite name='tabBarBadge' key={'tabBarBadge'}>
                     <TestCase itShould='tabBarBadge' tags={['C_API']}>
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }}>
                         <NavigationContainer>
                           <Tab.Navigator screenOptions={{
                             tabBarLabelStyle: {
@@ -1191,6 +1240,7 @@ export const MaterialTopTabsExample = () => {
                             }
                           }}>
                             <Tab.Screen name="Home" component={HomeScreen} options={{
+                              tabBarItemStyle: { width: contWidth / 2 },
                               tabBarBadge: () => {
                                 return <View style={styles.tabBarBadge}>
                                   <Text style={styles.tabBarBadgeText}>a</Text>
@@ -1199,6 +1249,7 @@ export const MaterialTopTabsExample = () => {
                             }} />
 
                             <Tab.Screen name="Settings" component={SettingsScreen} options={{
+                              tabBarItemStyle: { width: contWidth / 2 },
                               tabBarBadge: () => {
                                 return <View style={styles.tabBarBadge}>
                                   <Text style={styles.tabBarBadgeText}>3</Text>
@@ -1237,7 +1288,9 @@ export const MaterialTopTabsExample = () => {
                     }}></ToggleButton>
                     <TestCase itShould='' tags={['C_API']}>
                       <Text>当前渲染页面：{JSON.stringify(screens)}</Text>
-                      <View style={styles.container}>
+                      <View style={styles.container} onLayout={(e) => {
+                        setContWidth(e.nativeEvent.layout.width);
+                      }}>
                         <NavigationContainer>
                           <Tab.Navigator
                             screenOptions={{
@@ -1258,9 +1311,9 @@ export const MaterialTopTabsExample = () => {
                               }
                             }}
                           >
-                            <Tab.Screen name="Home" component={HomeScreen1} />
-                            <Tab.Screen name="Notifications" component={NotificationsScreen1} />
-                            <Tab.Screen name="Settings" component={SettingsScreen1} />
+                            <Tab.Screen name="Home" component={HomeScreen1} options={{ tabBarItemStyle: { width: contWidth / 3 } }} />
+                            <Tab.Screen name="Notifications" component={NotificationsScreen1} options={{ tabBarItemStyle: { width: contWidth / 3 } }} />
+                            <Tab.Screen name="Settings" component={SettingsScreen1} options={{ tabBarItemStyle: { width: contWidth / 3 } }} />
                           </Tab.Navigator >
                         </NavigationContainer>
                       </View>
@@ -1298,15 +1351,17 @@ export const MaterialTopTabsExample = () => {
 
 
                         return (
-                          <View style={styles.container}>
+                          <View style={styles.container} onLayout={(e) => {
+                            setContWidth(e.nativeEvent.layout.width);
+                          }}>
                             <NavigationContainer>
                               <Tab.Navigator screenOptions={{
                                 tabBarLabelStyle: {
                                   textTransform: 'none'
                                 }
                               }}>
-                                <Tab.Screen name="Home" component={Event} />
-                                <Tab.Screen name="Settings" component={SettingsScreen} />
+                                <Tab.Screen name="Home" component={Event} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
+                                <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
                               </Tab.Navigator >
 
                             </NavigationContainer>
@@ -1345,15 +1400,17 @@ export const MaterialTopTabsExample = () => {
 
 
                         return (
-                          <View style={styles.container}>
+                          <View style={styles.container} onLayout={(e) => {
+                            setContWidth(e.nativeEvent.layout.width);
+                          }}>
                             <NavigationContainer>
                               <Tab.Navigator screenOptions={{
                                 tabBarLabelStyle: {
                                   textTransform: 'none'
                                 }
                               }}>
-                                <Tab.Screen name="Home" component={Event} />
-                                <Tab.Screen name="Settings" component={SettingsScreen} />
+                                <Tab.Screen name="Home" component={Event} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
+                                <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarItemStyle: { width: contWidth / 2 } }} />
                               </Tab.Navigator >
 
                             </NavigationContainer>
@@ -1377,6 +1434,7 @@ const styles = StyleSheet.create({
     height: 350
   },
   icon: {
+    width: 25,
     backgroundColor: 'blue'
   },
   textInput: {
